@@ -1,4 +1,4 @@
-package com.config;
+package com.learning.config;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;

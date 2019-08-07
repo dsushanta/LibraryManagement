@@ -1,4 +1,4 @@
-package com.config;
+package com.learning.config;
 
 public class ProjectConfig {
 

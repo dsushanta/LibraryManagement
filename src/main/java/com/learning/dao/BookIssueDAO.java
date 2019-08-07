@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.config.LibraryConfig.*;
+import static com.learning.config.LibraryConfig.*;
 
 public class BookIssueDAO extends BaseDAO {
 

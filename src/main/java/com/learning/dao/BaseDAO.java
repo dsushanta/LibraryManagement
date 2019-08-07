@@ -1,6 +1,6 @@
 package com.learning.dao;
 
-import com.config.LoadEnvironment;
+import com.learning.config.LoadEnvironment;
 
 public class BaseDAO extends LoadEnvironment {
 
