@@ -1,0 +1,5 @@
+host: "localhost"
+port: "3306"
+dbuser: "root"
+dbpassword: "trashbin"
+database: "LIBRARY_MANAGEMENT"
