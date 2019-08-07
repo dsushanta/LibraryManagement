@@ -1,8 +1,11 @@
 package com.learning.webresource;
 
 import com.learning.dto.User;
+import com.learning.dto.UserIssuedBook;
+import com.learning.service.BookIssueService;
 import com.learning.service.UserService;
 import com.learning.webresource.filterbeans.UserFilterBean;
+import com.learning.webresource.filterbeans.UserIssuedBookFilterBean;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -81,9 +84,14 @@ public class UserResource {
         new UserService().deleteUser(username);
     }
 
+    @GET
     @Path("/{username}/books")
-    public UserIssuedBooksResource getBookIssueResource() {
-        return new UserIssuedBooksResource();
-    }
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserIssuedBook> getUserIssuedBooks(@PathParam("username") String username,
+                                                   @BeanParam UserIssuedBookFilterBean bean, @Context UriInfo uriInfo) {
 
+        List<UserIssuedBook> booksIssued = new BookIssueService().getListOfBooksIssuedToAUser(username, bean);
+
+        return booksIssued;
+    }
 }
