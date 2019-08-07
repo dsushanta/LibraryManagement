@@ -20,7 +20,4 @@ public class GenreResource {
 
         return genres;
     }
-
-    // ######################### PRIVATE METHODS #################################
-
 }

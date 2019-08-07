@@ -17,7 +17,7 @@ import static com.learning.config.LibraryConfig.*;
 
 public class BookIssueDAO extends BaseDAO {
 
-    private String TABLE_NAME = "LI_BOOK_LIFE_CYCLE";
+    private final String TABLE_NAME = "LI_BOOK_LIFE_CYCLE";
 
     public BookIssueDAO() {
         super();
@@ -51,9 +51,8 @@ public class BookIssueDAO extends BaseDAO {
         ResultSet rs = dbService.read(preparedStatement);
         int newBookIssueId=0;
         try {
-            while(rs.next()) {
+            while(rs.next())
                 newBookIssueId = rs.getInt("ID");
-            }
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,9 +94,8 @@ public class BookIssueDAO extends BaseDAO {
         BookIssue bookIssue = new BookIssue();
 
         try {
-            while(rs.next()) {
+            while(rs.next())
                 setBookIssueObject(rs, bookIssue);
-            }
         } catch(SQLException ex) {
             ex.printStackTrace();
         }

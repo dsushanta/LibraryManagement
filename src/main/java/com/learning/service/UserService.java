@@ -28,7 +28,7 @@ public class UserService {
     }
 
     public User addNewUser(User user) {
-        nullFieldVsalueCheck(user);
+        nullFieldValueCheck(user);
 
         boolean usernameExists = userDAO.checkIfUsernameExistsInDatabase(user.getusername());
         if(usernameExists)
@@ -78,7 +78,7 @@ public class UserService {
 
     // ##################### PRIVATE METHODS ######################
 
-    private void nullFieldVsalueCheck(User user) {
+    private void nullFieldValueCheck(User user) {
         if(user.getusername() == null || user.getusername().isEmpty())
             throw new FieldValueRequiredException("Value for Username field is either empty or null !!");
         if(user.getemail() == null || user.getemail().isEmpty())

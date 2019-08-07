@@ -12,6 +12,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
+import static com.learning.utils.CommonUtils.*;
+
 @Path("/users")
 public class UserResource {
 
@@ -22,7 +24,7 @@ public class UserResource {
         List<User> users = new UserService().getUsers(filterBean.getLastName(), filterBean.getOffset(), filterBean.getLimit());
 
         for(User user : users) {
-            String userLink = getURISelf(uriInfo, user).toString();
+            String userLink = getURISelf(uriInfo, user.getusername()).toString();
             user.addLink(userLink, "self");
         }
 
@@ -35,7 +37,7 @@ public class UserResource {
     public User getUserDetails(@PathParam("username") String username, @Context UriInfo uriInfo) {
 
         User user = new UserService().getUserDetails(username);
-        String userLink = getURISelf(uriInfo, user).toString();
+        String userLink = getURISelf(uriInfo, user.getusername()).toString();
         user.addLink(userLink, "self");
 
         return user;
@@ -50,7 +52,7 @@ public class UserResource {
                                   @Context UriInfo uriInfo) {
 
         user = new UserService().updateUserDetails(username, user);
-        String userLink = getURISelf(uriInfo, user).toString();
+        String userLink = getURISelf(uriInfo, user.getusername()).toString();
         user.addLink(userLink, "self");
 
         return user;
@@ -62,7 +64,7 @@ public class UserResource {
     public Response addNewUser(User user, @Context UriInfo uriInfo) {
 
         User newUser = new UserService().addNewUser(user);
-        URI userURI = getURISelf(uriInfo, user);
+        URI userURI = getURISelf(uriInfo, user.getusername());
         newUser.addLink(userURI.toString(), "self");
         Response response = Response.created(userURI)
                 .entity(newUser)
@@ -84,13 +86,4 @@ public class UserResource {
         return new UserIssuedBooksResource();
     }
 
-    // ######################### PRIVATE METHODS #################################
-
-    private URI getURISelf(@Context UriInfo uriInfo, User user) {
-
-        return uriInfo.getBaseUriBuilder()
-                .path(UserResource.class)
-                .path(user.getusername())
-                .build();
-    }
 }

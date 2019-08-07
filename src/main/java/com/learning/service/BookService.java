@@ -18,7 +18,7 @@ public class BookService {
     }
 
     public Book addNewBook(Book book) {
-        nullFieldVsalueCheck(book);
+        nullFieldValueCheck(book);
         Book newBook;
 
         boolean bookExists = bookDAO.checkIfBookExistsInDatabase(book.getTitle(), book.getAuthor());
@@ -72,7 +72,7 @@ public class BookService {
 
     // ##################### PRIVATE METHODS ######################
 
-    private void nullFieldVsalueCheck(Book book) {
+    private void nullFieldValueCheck(Book book) {
         if(book.getTitle() == null || book.getTitle().isEmpty())
             throw new FieldValueRequiredException("Value for Title field is either empty or null !!");
         if(book.getDescription() == null || book.getDescription().isEmpty())

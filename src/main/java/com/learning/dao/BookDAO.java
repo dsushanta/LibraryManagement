@@ -12,13 +12,7 @@ import java.util.List;
 
 public class BookDAO extends BaseDAO {
 
-    /*private String host = "localhost";
-    private String port = "3306";
-    private String dbUser = "root";
-    private String dbPassword = "trashbin";
-    private String database = "LIBRARY_MANAGEMENT";*/
-
-    private String TABLE_NAME = "LI_BOOKS";
+    private final String TABLE_NAME = "LI_BOOKS";
 
     public BookDAO() {
         super();
@@ -44,9 +38,8 @@ public class BookDAO extends BaseDAO {
         ResultSet rs = dbService.read(preparedStatement);
         int newBookId=0;
         try {
-            while(rs.next()) {
+            while(rs.next())
                 newBookId = rs.getInt("ID");
-            }
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -66,7 +59,6 @@ public class BookDAO extends BaseDAO {
 
         try {
             preparedStatement.setInt(1, bookId);
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -92,9 +84,8 @@ public class BookDAO extends BaseDAO {
         Book book = new Book();
 
         try {
-            while(rs.next()) {
+            while(rs.next())
                setBookObject(rs, book);
-            }
         } catch(SQLException ex) {
             ex.printStackTrace();
         }
@@ -195,9 +186,8 @@ public class BookDAO extends BaseDAO {
 
         ResultSet rs = dbService.read(preparedStatement);
         try {
-            while(rs.next()) {
+            while(rs.next())
                 bookId = rs.getInt("BookId");
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

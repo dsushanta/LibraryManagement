@@ -8,8 +8,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
-import java.net.URI;
 import java.util.List;
+
+import static com.learning.utils.CommonUtils.*;
 
 public class CopyResource {
 
@@ -20,7 +21,7 @@ public class CopyResource {
         List<Copy> copies = new CopyService().getCopies(copyBean);
 
         for(Copy copy : copies) {
-            String copyLink = getURISelf(uriInfo, copy).toString();
+            String copyLink = getURISelf(uriInfo, Integer.toString(copy.getCopyId())).toString();
             copy.addLink(copyLink, "self");
         }
 
@@ -33,7 +34,7 @@ public class CopyResource {
     public Copy getCopyDetails(@PathParam("copyId") int copyId, @Context UriInfo uriInfo) {
 
         Copy copy = new CopyService().getCopyDetails(copyId);
-        String copyLink = getURISelf(uriInfo, copy).toString();
+        String copyLink = getURISelf(uriInfo, Integer.toString(copy.getCopyId())).toString();
         copy.addLink(copyLink, "self");
 
         return copy;
@@ -45,16 +46,6 @@ public class CopyResource {
     public void deleteCopy(@PathParam("copyId") int copyId) {
 
         new CopyService().deleteCopyFromDatabase(copyId);
-    }
-
-    // ######################### PRIVATE METHODS #################################
-
-    private URI getURISelf(@Context UriInfo uriInfo, Copy copy) {
-
-        return uriInfo.getBaseUriBuilder()
-                .path(BookResource.class)
-                .path(Integer.toString(copy.getCopyId()))
-                .build();
     }
 
 }

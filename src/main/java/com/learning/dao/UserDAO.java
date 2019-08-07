@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UserDAO extends BaseDAO {
     
-    private String TABLE_NAME = "LI_USERS";
+    private final String TABLE_NAME = "LI_USERS";
 
     public UserDAO() {
         super();
@@ -71,9 +71,8 @@ public class UserDAO extends BaseDAO {
         User user = new User();
 
         try {
-            while(rs.next()) {
+            while(rs.next())
                setUserObject(rs, user);
-            }
         } catch(SQLException ex) {
             ex.printStackTrace();
         }

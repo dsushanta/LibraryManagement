@@ -13,6 +13,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
+import static com.learning.utils.CommonUtils.*;
+
 @Path("/books")
 public class BookResource {
 
@@ -23,7 +25,7 @@ public class BookResource {
         List<Book> books = new BookService().getBooks(bookBean);
 
         for(Book book : books) {
-            String bookLink = getURISelf(uriInfo, book).toString();
+            String bookLink = getURISelf(uriInfo, Integer.toString(book.getBookId())).toString();
             book.addLink(bookLink, "self");
         }
 
@@ -36,7 +38,7 @@ public class BookResource {
     public Book getBookDetails(@PathParam("bookId") int bookId, @Context UriInfo uriInfo) {
 
         Book book = new BookService().getBookDetails(bookId);
-        String bookLink = getURISelf(uriInfo, book).toString();
+        String bookLink = getURISelf(uriInfo, Integer.toString(book.getBookId())).toString();
         book.addLink(bookLink, "self");
 
         return book;
@@ -51,7 +53,7 @@ public class BookResource {
                                   @Context UriInfo uriInfo) {
 
         book = new BookService().updateBookDetails(bookId, book);
-        String bookLink = getURISelf(uriInfo, book).toString();
+        String bookLink = getURISelf(uriInfo, Integer.toString(book.getBookId())).toString();
         book.addLink(bookLink, "self");
 
         return book;
@@ -64,7 +66,7 @@ public class BookResource {
 
         Book newBook = new BookService().addNewBook(book);
         new CopyService().addNewCopy(newBook.getBookId());
-        URI bookURI = getURISelf(uriInfo, book);
+        URI bookURI = getURISelf(uriInfo, Integer.toString(book.getBookId()));
         newBook.addLink(bookURI.toString(), "self");
         Response response = Response.created(bookURI)
                 .entity(newBook)
@@ -96,13 +98,4 @@ public class BookResource {
         return new GenreResource();
     }
 
-    // ######################### PRIVATE METHODS #################################
-
-    private URI getURISelf(@Context UriInfo uriInfo, Book book) {
-
-        return uriInfo.getBaseUriBuilder()
-                .path(BookResource.class)
-                .path(Integer.toString(book.getBookId()))
-                .build();
-    }
 }

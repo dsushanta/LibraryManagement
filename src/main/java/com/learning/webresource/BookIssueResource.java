@@ -14,6 +14,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
+import static com.learning.utils.CommonUtils.*;
+
 public class BookIssueResource {
 
     @GET
@@ -23,7 +25,7 @@ public class BookIssueResource {
         List<BookIssue> bookIssues = new BookIssueService().getBookIssueEntries(bookIssueFilterBean);
 
         for(BookIssue bookIssue : bookIssues) {
-            String bookIssueLink = getURISelf(uriInfo, bookIssue).toString();
+            String bookIssueLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId())).toString();
             bookIssue.addLink(bookIssueLink, "self");
         }
 
@@ -36,7 +38,7 @@ public class BookIssueResource {
     public BookIssue getBookIssueDetails(@PathParam("bookIssueId") int bookIssueId, @Context UriInfo uriInfo) {
 
         BookIssue bookIssue = new BookIssueService().getBookIssueDetails(bookIssueId);
-        String bookIssueLink = getURISelf(uriInfo, bookIssue).toString();
+        String bookIssueLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId())).toString();
         bookIssue.addLink(bookIssueLink, "self");
 
         return bookIssue;
@@ -49,7 +51,7 @@ public class BookIssueResource {
 
         bookIssue.setBookId(bookId);
         bookIssue = new BookIssueService().issueABook(bookIssue);
-        URI copyURI = getURISelf(uriInfo, bookIssue);
+        URI copyURI = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId()));
         bookIssue.addLink(copyURI.toString(), "self");
         Response response = Response.created(copyURI)
                 .entity(bookIssue)
@@ -75,7 +77,7 @@ public class BookIssueResource {
         } else
             throw new EntryNotFoundException("Book Life Cycle operation : "+operation.getOperation()+" is not a valid operation");
 
-        String copyLink = getURISelf(uriInfo, bookIssue).toString();
+        String copyLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId())).toString();
         bookIssue.addLink(copyLink, "self");
 
         return bookIssue;
@@ -88,15 +90,4 @@ public class BookIssueResource {
 
         new BookIssueService().removeBookIssueEntryFromDatabase(bookIssueId);
     }
-
-    // ######################### PRIVATE METHODS #################################
-
-    private URI getURISelf(@Context UriInfo uriInfo, BookIssue bookIssue) {
-
-        return uriInfo.getBaseUriBuilder()
-                .path(BookResource.class)
-                .path(Integer.toString(bookIssue.getBookIssueId()))
-                .build();
-    }
-
 }

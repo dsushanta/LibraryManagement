@@ -1,12 +1,12 @@
 package com.learning.filters;
 
+import com.learning.config.ProjectConfig;
 import com.learning.dao.UserDAO;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -19,7 +19,7 @@ public class SecurityFilter implements ContainerRequestFilter {
     private final String AUTHORIZATION_HEADER_PREFIX = "Basic ";
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         List<String> authHeaders = requestContext.getHeaders().get(AUTHORIZATION_HEADER_KEY);
 
         if(authHeaders != null && authHeaders.size() > 0) {
@@ -31,7 +31,7 @@ public class SecurityFilter implements ContainerRequestFilter {
             String usernameRecieved = tokenizer.nextToken();
             String passwordRecieved = tokenizer.nextToken();
 
-            if(usernameRecieved.equals("admin")) {
+            if(usernameRecieved.equals(ProjectConfig.LIBRARY_ADMIN_USERNAME)) {
                 boolean authenticationStatus = new UserDAO().authenticateUserFromDatabase(usernameRecieved, passwordRecieved);
                 if (authenticationStatus)
                     return;

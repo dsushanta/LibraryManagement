@@ -28,7 +28,7 @@ public class BookIssueService {
     }
 
     public BookIssue issueABook(BookIssue bookIssue) {
-        nullFieldVsalueCheck(bookIssue);
+        nullFieldValueCheck(bookIssue);
 
         boolean checkUsername = userDAO.checkIfUsernameExistsInDatabase(bookIssue.getUserName());
         if(!checkUsername)
@@ -138,7 +138,7 @@ public class BookIssueService {
 
     // ##################### PRIVATE METHODS ######################
 
-    private void nullFieldVsalueCheck(BookIssue bookIssue) {
+    private void nullFieldValueCheck(BookIssue bookIssue) {
         if(bookIssue.getCopyId() == 0 )
             throw new FieldValueRequiredException("Value for Copy Id field is either empty or null !!");
         if(bookIssue.getBookId() == 0 )

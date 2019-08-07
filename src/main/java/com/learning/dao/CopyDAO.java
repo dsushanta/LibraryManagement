@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CopyDAO extends BaseDAO {
 
-    private String TABLE_NAME = "LI_BOOK_COPIES";
+    private final String TABLE_NAME = "LI_BOOK_COPIES";
 
     public CopyDAO() {
         super();
@@ -34,9 +34,8 @@ public class CopyDAO extends BaseDAO {
         ResultSet rs = dbService.read(preparedStatement);
         int newCopyId=0;
         try {
-            while(rs.next()) {
+            while(rs.next())
                 newCopyId = rs.getInt("ID");
-            }
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -80,9 +79,8 @@ public class CopyDAO extends BaseDAO {
         Copy copy = new Copy();
 
         try {
-            while(rs.next()){
+            while(rs.next())
                 setCopyObject(rs, copy);
-            }
         } catch(SQLException ex) {
             ex.printStackTrace();
         }
