@@ -1,8 +1,11 @@
 package com.learning.service;
 
 import com.learning.dao.BookDAO;
+import com.learning.dao.BookIssueDAO;
 import com.learning.dao.CopyDAO;
+import com.learning.dto.Book;
 import com.learning.dto.Copy;
+import com.learning.exception.CannotDeleteException;
 import com.learning.exception.DataNotFoundException;
 import com.learning.webresource.filterbeans.CopyFilterBean;
 
@@ -12,10 +15,12 @@ public class CopyService {
 
     CopyDAO copyDAO;
     BookDAO bookDAO;
+    BookIssueDAO bookIssueDAO;
 
     public CopyService() {
         copyDAO = new CopyDAO();
         bookDAO = new BookDAO();
+        bookIssueDAO = new BookIssueDAO();
     }
 
     public Copy addNewCopy(int bookId) {
@@ -51,10 +56,11 @@ public class CopyService {
 
         if(copy.getCopyId() == 0)
             throw new DataNotFoundException("No copy found with copy id : "+copyId);
-        else
+        else if(copyDAO.checkIfCopyOfABookIsIssued(copyId))
+            throw new CannotDeleteException("Copy entry can not be removed as copy of the book has been issued to a customer !!");
+        else {
+            bookIssueDAO.deleteBookIssueEntriesForACopyFromDatabase(copyId);
             copyDAO.deleteCopyFromDatabase(copyId);
+        }
     }
-
-    // ##################### PRIVATE METHODS ######################
-
 }

@@ -27,7 +27,7 @@ public class UserResource {
         List<User> users = new UserService().getUsers(filterBean.getLastName(), filterBean.getOffset(), filterBean.getLimit());
 
         for(User user : users) {
-            String userLink = getURISelf(uriInfo, user.getusername()).toString();
+            String userLink = getURISelf(uriInfo, user.getusername(), this).toString();
             user.addLink(userLink, "self");
         }
 
@@ -40,7 +40,7 @@ public class UserResource {
     public User getUserDetails(@PathParam("username") String username, @Context UriInfo uriInfo) {
 
         User user = new UserService().getUserDetails(username);
-        String userLink = getURISelf(uriInfo, user.getusername()).toString();
+        String userLink = getURISelf(uriInfo, user.getusername(), this).toString();
         user.addLink(userLink, "self");
 
         return user;
@@ -55,7 +55,7 @@ public class UserResource {
                                   @Context UriInfo uriInfo) {
 
         user = new UserService().updateUserDetails(username, user);
-        String userLink = getURISelf(uriInfo, user.getusername()).toString();
+        String userLink = getURISelf(uriInfo, user.getusername(), this).toString();
         user.addLink(userLink, "self");
 
         return user;
@@ -67,7 +67,7 @@ public class UserResource {
     public Response addNewUser(User user, @Context UriInfo uriInfo) {
 
         User newUser = new UserService().addNewUser(user);
-        URI userURI = getURISelf(uriInfo, user.getusername());
+        URI userURI = getURISelf(uriInfo, user.getusername(), this);
         newUser.addLink(userURI.toString(), "self");
         Response response = Response.created(userURI)
                 .entity(newUser)
@@ -90,8 +90,6 @@ public class UserResource {
     public List<UserIssuedBook> getUserIssuedBooks(@PathParam("username") String username,
                                                    @BeanParam UserIssuedBookFilterBean bean, @Context UriInfo uriInfo) {
 
-        List<UserIssuedBook> booksIssued = new BookIssueService().getListOfBooksIssuedToAUser(username, bean);
-
-        return booksIssued;
+        return new BookIssueService().getListOfBooksIssuedToAUser(username, bean);
     }
 }

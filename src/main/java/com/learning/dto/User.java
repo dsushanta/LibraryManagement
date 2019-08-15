@@ -11,6 +11,8 @@ public class User {
     private String email;
     private String password;
     private String favGenre;
+    private int bookCount;
+    private int fine;
     private List<Link> links = new ArrayList<>();
 
     public User() {
@@ -72,6 +74,22 @@ public class User {
         this.favGenre = favGenre;
     }
 
+    public int getFine() {
+        return fine;
+    }
+
+    public void setFine(int fine) {
+        this.fine = fine;
+    }
+
+    public int getBookCount() {
+        return bookCount;
+    }
+
+    public void setBookCount(int bookCount) {
+        this.bookCount = bookCount;
+    }
+
     public void addLink(String url, String rel) {
         Link l = new Link();
         l.setLink(url);
@@ -87,6 +105,8 @@ public class User {
                 ", lastname='" + lastname + '\'' +
                 ", email='" + email + '\'' +
                 ", favGenre='" + favGenre + '\'' +
+                ", bookCount=" + bookCount +
+                ", fine=" + fine +
                 '}';
     }
 }

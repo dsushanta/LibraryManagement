@@ -5,6 +5,7 @@ import java.sql.Date;
 public class UserIssuedBook {
 
     private int bookIssueId;
+    private int bookId;
     private String title;
     private String author;
     private String genre;
@@ -12,6 +13,9 @@ public class UserIssuedBook {
     private Date expectedReturnDate;
     private Date actualReturnDate;
     private Date reIssueDate;
+    private int fine;
+    private boolean fineCleared;
+    private boolean returned;
 
     public UserIssuedBook() {
     }
@@ -22,6 +26,14 @@ public class UserIssuedBook {
 
     public void setBookIssueId(int bookIssueId) {
         this.bookIssueId = bookIssueId;
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
     }
 
     public String getTitle() {
@@ -78,5 +90,29 @@ public class UserIssuedBook {
 
     public void setReIssueDate(Date reIssueDate) {
         this.reIssueDate = reIssueDate;
+    }
+
+    public int getFine() {
+        return fine;
+    }
+
+    public void setFine(int fine) {
+        this.fine = fine;
+    }
+
+    public boolean isFineCleared() {
+        return fineCleared;
+    }
+
+    public void setFineCleared(boolean fineCleared) {
+        this.fineCleared = fineCleared;
+    }
+
+    public boolean isReturned() {
+        return returned;
+    }
+
+    public void setReturned(boolean returned) {
+        this.returned = returned;
     }
 }

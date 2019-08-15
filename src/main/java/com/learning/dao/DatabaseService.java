@@ -5,7 +5,7 @@ import java.sql.*;
 public class DatabaseService {
 
     private String dbHost, dbPort, dbUser, dbPassword, database;
-    public Connection dbConnection;
+    private Connection dbConnection;
 
     public DatabaseService(String host, String port, String user, String password, String db) {
         this.dbHost = host;
@@ -65,6 +65,7 @@ public class DatabaseService {
     public void closeConnection() {
         try {
             dbConnection.close();
+            dbConnection = null;
         } catch (SQLException e) {
             e.printStackTrace();
         }

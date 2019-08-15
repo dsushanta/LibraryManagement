@@ -34,8 +34,6 @@ public class UserDAO extends BaseDAO {
         dbService.write(preparedStatement);
         User newUser = getUsersWithUsernameFromDatabase(user.getusername());
 
-        dbService.closeConnection();
-
         return newUser;
     }
 
@@ -51,7 +49,7 @@ public class UserDAO extends BaseDAO {
             ex.printStackTrace();
         }
         status = dbService.write(preparedStatement);
-        dbService.closeConnection();
+        closeDBConnection();
 
         return status;
     }
@@ -76,7 +74,7 @@ public class UserDAO extends BaseDAO {
         } catch(SQLException ex) {
             ex.printStackTrace();
         }
-        dbService.closeConnection();
+        closeDBConnection();
 
         return user;
     }
@@ -172,7 +170,7 @@ public class UserDAO extends BaseDAO {
         } catch(SQLException ex) {
             ex.printStackTrace();
         }
-        dbService.closeConnection();
+        closeDBConnection();
 
         return allUsers;
     }
@@ -198,7 +196,7 @@ public class UserDAO extends BaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        dbService.closeConnection();
+        closeDBConnection();
 
         return authenticationStatus;
     }
@@ -223,7 +221,7 @@ public class UserDAO extends BaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        dbService.closeConnection();
+        closeDBConnection();
 
         return valueExists;
     }
@@ -248,9 +246,64 @@ public class UserDAO extends BaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        dbService.closeConnection();
+        closeDBConnection();
 
         return valueExists;
+    }
+
+    public int getBookCountForAUser(String username) {
+        int bookCount = 0;
+        String query = "SELECT BookCount FROM "+TABLE_NAME+" WHERE UserName=?";
+        dbService = getDBService();
+        PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
+
+        try {
+            preparedStatement.setString(1,username);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        ResultSet rs = dbService.read(preparedStatement);
+
+        try {
+            while(rs.next())
+                bookCount = rs.getInt("BookCount");
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+        closeDBConnection();
+
+        return bookCount;
+    }
+
+    public void updateBookCountForAUser(String username, int count) {
+        String query = "UPDATE "+TABLE_NAME+" SET BookCount=? WHERE UserName=?";
+        dbService = getDBService();
+        PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
+
+        try {
+            preparedStatement.setInt(1, count);
+            preparedStatement.setString(2, username);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        dbService.write(preparedStatement);
+        closeDBConnection();
+    }
+
+    public void updateUserDues(String userName, int userdue) {
+        String query = "UPDATE "+TABLE_NAME+" SET Fine=? WHERE UserName=?";
+        dbService = getDBService();
+        PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
+
+        try {
+            preparedStatement.setInt(1, userdue);
+            preparedStatement.setString(2, userName);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        dbService.write(preparedStatement);
+        closeDBConnection();
     }
 
     // ##################### PRIVATE METHODS ######################
@@ -262,6 +315,8 @@ public class UserDAO extends BaseDAO {
             user.setlastname(rs.getString("LastName"));
             user.setemail(rs.getString("Email"));
             user.setFavGenre(rs.getString("FavGenre"));
+            user.setBookCount(rs.getInt("BookCount"));
+            user.setFine(rs.getInt("Fine"));
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -1,8 +1,11 @@
 package com.learning.service;
 
 import com.learning.dao.BookDAO;
+import com.learning.dao.BookIssueDAO;
+import com.learning.dao.CopyDAO;
 import com.learning.dto.Book;
 import com.learning.dto.Genre;
+import com.learning.exception.CannotDeleteException;
 import com.learning.exception.DataNotFoundException;
 import com.learning.exception.FieldValueRequiredException;
 import com.learning.webresource.filterbeans.BookFilterBean;
@@ -12,9 +15,13 @@ import java.util.List;
 public class BookService {
 
     BookDAO bookDAO;
+    CopyDAO copyDAO;
+    BookIssueDAO bookIssueDAO;
 
     public BookService() {
         bookDAO = new BookDAO();
+        copyDAO = new CopyDAO();
+        bookIssueDAO = new BookIssueDAO();
     }
 
     public Book addNewBook(Book book) {
@@ -56,13 +63,17 @@ public class BookService {
     }
 
     public void deleteBook(int bookId) {
-
         Book book = bookDAO.getBookWithBookIdFromDatabase(bookId);
 
         if(book.getBookId() == 0)
             throw new DataNotFoundException("No book found with bookId : "+bookId);
-        else
+        else if(copyDAO.checkIfAnyCopyOfABookIsIssued(bookId))
+            throw new CannotDeleteException("Book entry can not be removed as the book has been issued to a customer !!");
+        else {
+            bookIssueDAO.deleteBookIssueEntriesForABookFromDatabase(bookId);
+            copyDAO.deleteAllCopiesOfABookFromDatabase(bookId);
             bookDAO.deleteBookFromDatabase(bookId);
+        }
     }
 
     public List<Genre> getAllGenre() {

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 
-@Provider
+//@Provider
 public class SecurityFilter implements ContainerRequestFilter {
 
     private final String AUTHORIZATION_HEADER_KEY = "Authorization";

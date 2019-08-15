@@ -16,16 +16,21 @@ import java.util.List;
 
 import static com.learning.utils.CommonUtils.*;
 
+@Path("/")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class BookIssueResource {
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<BookIssue> getBookIssueEntries(@BeanParam BookIssueFilterBean bookIssueFilterBean, @Context UriInfo uriInfo) {
+    public List<BookIssue> getBookIssueEntries(@PathParam("bookId") int bookId,
+                                               @BeanParam BookIssueFilterBean bookIssueFilterBean,
+                                               @Context UriInfo uriInfo) {
 
+        bookIssueFilterBean.setBookId(bookId);
         List<BookIssue> bookIssues = new BookIssueService().getBookIssueEntries(bookIssueFilterBean);
 
         for(BookIssue bookIssue : bookIssues) {
-            String bookIssueLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId())).toString();
+            String bookIssueLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId()), this).toString();
             bookIssue.addLink(bookIssueLink, "self");
         }
 
@@ -34,24 +39,25 @@ public class BookIssueResource {
 
     @GET
     @Path("/{bookIssueId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public BookIssue getBookIssueDetails(@PathParam("bookIssueId") int bookIssueId, @Context UriInfo uriInfo) {
+    public BookIssue getBookIssueDetails(@PathParam("bookId") int bookId,
+                                         @PathParam("bookIssueId") int bookIssueId,
+                                         @Context UriInfo uriInfo) {
 
         BookIssue bookIssue = new BookIssueService().getBookIssueDetails(bookIssueId);
-        String bookIssueLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId())).toString();
+        if(bookId != bookIssue.getBookId())
+            throw new EntryNotFoundException("Book Id belonging to the book issue id is different from the book id present in the URL");
+        String bookIssueLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId()), this).toString();
         bookIssue.addLink(bookIssueLink, "self");
 
         return bookIssue;
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response issueACopyOfABook(@PathParam("bookId") int bookId, BookIssue bookIssue, @Context UriInfo uriInfo) {
 
         bookIssue.setBookId(bookId);
         bookIssue = new BookIssueService().issueABook(bookIssue);
-        URI copyURI = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId()));
+        URI copyURI = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId()), this);
         bookIssue.addLink(copyURI.toString(), "self");
         Response response = Response.created(copyURI)
                 .entity(bookIssue)
@@ -62,7 +68,6 @@ public class BookIssueResource {
 
     @PATCH
     @Path("/{bookIssueId}")
-    @Produces(MediaType.APPLICATION_JSON)
     public BookIssue updateBookIssueDetails(@PathParam("bookId") int bookId,
                                             @PathParam("bookIssueId") int bookIssueId,
                                             BookIssue bookIssue, @Context UriInfo uriInfo) {
@@ -77,7 +82,7 @@ public class BookIssueResource {
         } else
             throw new EntryNotFoundException("Book Life Cycle operation : "+operation.getOperation()+" is not a valid operation");
 
-        String copyLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId())).toString();
+        String copyLink = getURISelf(uriInfo, Integer.toString(bookIssue.getBookIssueId()), this).toString();
         bookIssue.addLink(copyLink, "self");
 
         return bookIssue;
@@ -85,7 +90,6 @@ public class BookIssueResource {
 
     @DELETE
     @Path("/{bookIssueId}")
-    @Produces(MediaType.APPLICATION_JSON)
     public void deleteBookIssueEntry(@PathParam("bookIssueId") int bookIssueId) {
 
         new BookIssueService().removeBookIssueEntryFromDatabase(bookIssueId);

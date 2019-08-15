@@ -19,7 +19,7 @@ public class CopyDAO extends BaseDAO {
 
     public Copy addNewCopyIntoDatabase(int bookId) {
         String query = "INSERT INTO "+TABLE_NAME+"(BookId) VALUES(?)";
-        DatabaseService dbService = getDBService();
+        dbService = getDBService();
         PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
 
         try {
@@ -42,15 +42,13 @@ public class CopyDAO extends BaseDAO {
 
         Copy newCopy = getCopyWithCopyIdFromDatabase(newCopyId);
 
-        closeDBConnection();
-
         return newCopy;
     }
 
     public int deleteCopyFromDatabase(int copyId) {
         int status;
         String query = "DELETE FROM "+TABLE_NAME+" WHERE CopyId=?";
-        DatabaseService dbService = getDBService();
+        dbService = getDBService();
         PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
 
         try {
@@ -64,9 +62,26 @@ public class CopyDAO extends BaseDAO {
         return status;
     }
 
+    public int deleteAllCopiesOfABookFromDatabase(int bookId) {
+        int status;
+        String query = "DELETE FROM "+TABLE_NAME+" WHERE BookId=?";
+        dbService = getDBService();
+        PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
+
+        try {
+            preparedStatement.setInt(1, bookId);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        status = dbService.write(preparedStatement);
+        closeDBConnection();
+
+        return status;
+    }
+
     public Copy getCopyWithCopyIdFromDatabase(int copyId) {
         String query = "SELECT * FROM "+TABLE_NAME+" WHERE CopyId=?";
-        DatabaseService dbService = getDBService();
+        dbService = getDBService();
         PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
 
         try {
@@ -90,14 +105,14 @@ public class CopyDAO extends BaseDAO {
     }
 
     public Copy udateCopyInDatabase(Copy copy) {
-        Copy copyToBeUpdated = getCopyWithCopyIdFromDatabase(copy.getBookId());
+        Copy copyToBeUpdated = getCopyWithCopyIdFromDatabase(copy.getCopyId());
         if(copy.getBookId() != 0)
             copyToBeUpdated.setBookId(copy.getBookId());
 
         copyToBeUpdated.setIssued(copy.isIssued());
 
         String query = "UPDATE "+TABLE_NAME+" SET IsIssued=? WHERE CopyId=?";
-        DatabaseService dbService = getDBService();
+        dbService = getDBService();
         PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
 
         try {
@@ -131,7 +146,7 @@ public class CopyDAO extends BaseDAO {
         if(offset >=0 && limit >0)
             query.append(" LIMIT ").append(offset).append(",").append(limit);
 
-        DatabaseService dbService = getDBService();
+        dbService = getDBService();
         PreparedStatement preparedStatement = dbService.getPreparedStatement(query.toString());
 
         ResultSet rs = dbService.read(preparedStatement);
@@ -153,7 +168,7 @@ public class CopyDAO extends BaseDAO {
 
     public int getAvailableCopyOfABook(int bookId) {
         String query = "SELECT CopyId FROM "+TABLE_NAME+" WHERE BookId=? AND IsIssued=False ORDER BY CopyId LIMIT 1";
-        DatabaseService dbService = getDBService();
+        dbService = getDBService();
         PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
 
         try {
@@ -168,13 +183,62 @@ public class CopyDAO extends BaseDAO {
         try {
             while(rs.next())
                 availableCopyId = rs.getInt("CopyId");
-
         } catch(SQLException ex) {
             ex.printStackTrace();
         }
         closeDBConnection();
 
         return availableCopyId;
+    }
+
+    public boolean checkIfAnyCopyOfABookIsIssued(int bookId) {
+        boolean bookIssued = false;
+        String query = "SELECT CopyId FROM "+TABLE_NAME+" WHERE BookId=? AND IsIssued=True";
+        dbService = getDBService();
+        PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
+
+        try {
+            preparedStatement.setInt(1,bookId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        ResultSet rs = dbService.read(preparedStatement);
+
+        try {
+            if(rs.next())
+                bookIssued = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDBConnection();
+
+        return bookIssued;
+    }
+
+    public boolean checkIfCopyOfABookIsIssued(int copyId) {
+        boolean copyIssued = false;
+        String query = "SELECT * FROM "+TABLE_NAME+" WHERE CopyId=? AND IsIssued=True";
+        dbService = getDBService();
+        PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
+
+        try {
+            preparedStatement.setInt(1,copyId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        ResultSet rs = dbService.read(preparedStatement);
+
+        try {
+            if(rs.next())
+                copyIssued = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDBConnection();
+
+        return copyIssued;
     }
 
     // ##################### PRIVATE METHODS ######################

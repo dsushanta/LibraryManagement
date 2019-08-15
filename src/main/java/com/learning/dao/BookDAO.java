@@ -46,8 +46,6 @@ public class BookDAO extends BaseDAO {
 
         Book newBook = getBookWithBookIdFromDatabase(newBookId);
 
-        closeDBConnection();
-
         return newBook;
     }
 
@@ -113,7 +111,7 @@ public class BookDAO extends BaseDAO {
             preparedStatement.setString(1,bookToBeUpdated.getTitle());
             preparedStatement.setString(2,bookToBeUpdated.getDescription());
             preparedStatement.setString(3,bookToBeUpdated.getAuthor());
-            preparedStatement.setString(6,bookToBeUpdated.getGenre());
+            preparedStatement.setString(4,bookToBeUpdated.getGenre());
             preparedStatement.setInt(5, bookToBeUpdated.getBookId());
         } catch (SQLException e) {
             e.printStackTrace();

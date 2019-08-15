@@ -17,6 +17,7 @@ public class BookIssue {
     private Date actualReturnDate;
     private Date reIssueDate;
     private int fine;
+    private boolean fineCleared;
     private List<Link> links = new ArrayList<>();
     private BookLifeCycleOperation operation;
 
@@ -116,6 +117,14 @@ public class BookIssue {
         this.operation = operation;
     }
 
+    public boolean isFineCleared() {
+        return fineCleared;
+    }
+
+    public void setFineCleared(boolean fineCleared) {
+        this.fineCleared = fineCleared;
+    }
+
     public void addLink(String url, String rel) {
         Link l = new Link();
         l.setLink(url);
@@ -129,7 +138,7 @@ public class BookIssue {
                 "bookIssueId=" + bookIssueId +
                 ", copyId=" + copyId +
                 ", bookId=" + bookId +
-                ", userName=" + userName +
+                ", userName='" + userName + '\'' +
                 ", isReturned=" + isReturned +
                 ", isReissued=" + isReissued +
                 ", issueDate=" + issueDate +
@@ -137,6 +146,8 @@ public class BookIssue {
                 ", actualReturnDate=" + actualReturnDate +
                 ", reIssueDate=" + reIssueDate +
                 ", fine=" + fine +
+                ", fineCleared=" + fineCleared +
+                ", operation=" + operation +
                 '}';
     }
 }

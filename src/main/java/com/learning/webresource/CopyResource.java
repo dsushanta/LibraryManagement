@@ -12,16 +12,19 @@ import java.util.List;
 
 import static com.learning.utils.CommonUtils.*;
 
+//@Path("/")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class CopyResource {
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/")
     public List<Copy> getCopies(@BeanParam CopyFilterBean copyBean, @Context UriInfo uriInfo) {
 
         List<Copy> copies = new CopyService().getCopies(copyBean);
 
         for(Copy copy : copies) {
-            String copyLink = getURISelf(uriInfo, Integer.toString(copy.getCopyId())).toString();
+            String copyLink = getURISelf(uriInfo, Integer.toString(copy.getCopyId()), this).toString();
             copy.addLink(copyLink, "self");
         }
 
@@ -30,11 +33,10 @@ public class CopyResource {
 
     @GET
     @Path("/{copyId}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Copy getCopyDetails(@PathParam("copyId") int copyId, @Context UriInfo uriInfo) {
 
         Copy copy = new CopyService().getCopyDetails(copyId);
-        String copyLink = getURISelf(uriInfo, Integer.toString(copy.getCopyId())).toString();
+        String copyLink = getURISelf(uriInfo, Integer.toString(copy.getCopyId()), this).toString();
         copy.addLink(copyLink, "self");
 
         return copy;
@@ -42,7 +44,6 @@ public class CopyResource {
 
     @DELETE
     @Path("/{copyId}")
-    @Produces(MediaType.APPLICATION_JSON)
     public void deleteCopy(@PathParam("copyId") int copyId) {
 
         new CopyService().deleteCopyFromDatabase(copyId);
