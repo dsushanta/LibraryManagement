@@ -87,8 +87,10 @@ public class UserDAO extends BaseDAO {
             userToBeUpdated.setlastname(user.getlastname());
         if(user.getemail() != null && !user.getemail().isEmpty())
             userToBeUpdated.setemail(user.getemail());
+        if(user.getPassword() != null && !user.getPassword().isEmpty())
+            userToBeUpdated.setPassword(user.getPassword());
 
-        String query = "UPDATE "+TABLE_NAME+" SET FirstName=?, LastName=?, Email=? WHERE UserName=?";
+        String query = "UPDATE "+TABLE_NAME+" SET FirstName=?, LastName=?, Email=?, Pwd=SHA1(?) WHERE UserName=?";
         dbService = getDBService();
         PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
 
@@ -96,7 +98,8 @@ public class UserDAO extends BaseDAO {
             preparedStatement.setString(1,userToBeUpdated.getfirstname());
             preparedStatement.setString(2,userToBeUpdated.getlastname());
             preparedStatement.setString(3,userToBeUpdated.getemail());
-            preparedStatement.setString(4,userToBeUpdated.getusername());
+            preparedStatement.setString(4,userToBeUpdated.getPassword());
+            preparedStatement.setString(5,userToBeUpdated.getusername());
         } catch (SQLException e) {
             e.printStackTrace();
         }
