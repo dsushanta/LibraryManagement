@@ -31,6 +31,7 @@ public class BookService {
         boolean bookExists = bookDAO.checkIfBookExistsInDatabase(book.getTitle(), book.getAuthor());
         if(bookExists) {
             int bookId = bookDAO.getBookIdForTitleAndAuthorFromDatabase(book.getTitle(), book.getAuthor());
+            bookDAO.updateBookAvailabilityStatus(bookId, true);
             newBook = bookDAO.getBookWithBookIdFromDatabase(bookId);
         } else
             newBook = bookDAO.addNewBookIntoDatabase(book);

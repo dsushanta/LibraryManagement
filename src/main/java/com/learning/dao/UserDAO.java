@@ -17,7 +17,8 @@ public class UserDAO extends BaseDAO {
     }
 
     public User addNewUserIntoDatabase(User user) {
-        String query = "INSERT INTO "+TABLE_NAME+" VALUES (?, ?, ?, ?, SHA1(?), ?)";
+        String query = "INSERT INTO "+TABLE_NAME+"(UserName, FirstName, LastName, Email, Pwd, FavGenre)"+
+                " VALUES (?, ?, ?, ?, SHA1(?), ?)";
         dbService = getDBService();
         PreparedStatement preparedStatement = dbService.getPreparedStatement(query);
 
